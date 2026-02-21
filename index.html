@@ -92,7 +92,8 @@
                 let nombreArchivo = num.toString().padStart(3, '0') + ".txt";
                 
                 try {
-                    const res = await fetch(`/recetas/${nombreArchivo}`);
+                    // FORMA CORRECTA (Ruta relativa)
+                    const res = await fetch(`recetas/${nombreArchivo}`);
                     if (res.ok) {
                         const texto = await res.text();
                         mostrarReceta(texto);
@@ -123,4 +124,5 @@
     </script>
 </body>
 </html>
+
 
