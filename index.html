@@ -3,126 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recetario de Laura</title>
+    <title>Editorial Digital Bo</title>
     <style>
-        :root { --color-principal: #e67e22; --color-fondo: #fff5e6; }
-        body { font-family: 'Segoe UI', sans-serif; text-align: center; background: var(--color-fondo); color: #4e342e; margin: 0; padding: 20px; }
+        :root { 
+            --verde-agua-oscuro: #2c7a7b;
+            --verde-agua-medio: #4fd1c5;
+            --verde-agua-claro: #e6fffa;
+            --blanco-puro: #ffffff;
+            --texto-gris: #2d3748;
+        }
         
-        /* Ruleta */
-        #canvas-container { position: relative; margin: 20px auto; width: 300px; height: 300px; }
-        #flecha { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; 
-                  border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 35px solid #c0392b; z-index: 10; }
-        canvas { border-radius: 50%; border: 8px solid #d35400; box-shadow: 0 8px 20px rgba(0,0,0,0.2); width: 100%; height: 100%; }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            text-align: center; 
+            background-color: var(--verde-agua-claro); 
+            color: var(--texto-gris); 
+            margin: 0; 
+            padding: 20px; 
+        }
 
-        /* Botones */
-        .btn-girar { padding: 15px 40px; font-size: 1.3rem; background: var(--color-principal); color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #a04000; transition: 0.2s; }
+        h1 { margin-bottom: 5px; color: var(--verde-agua-oscuro); font-size: 2.2rem; }
+        h3 { margin-top: 0; font-weight: 300; color: var(--verde-agua-oscuro); letter-spacing: 1px; font-size: 1rem; }
+
+        #instruccion-texto { 
+            height: 50px; 
+            font-size: 1.4rem; 
+            font-weight: 600; 
+            color: var(--verde-agua-oscuro);
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Contenedor de la Ruleta */
+        #canvas-container { 
+            position: relative; 
+            margin: 10px auto; 
+            width: 320px; 
+            height: 320px; 
+        }
+        
+        #flecha { 
+            position: absolute; 
+            top: -15px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 0; 
+            height: 0; 
+            border-left: 18px solid transparent; 
+            border-right: 18px solid transparent; 
+            border-top: 35px solid var(--verde-agua-oscuro); 
+            z-index: 20; 
+        }
+
+        canvas { 
+            display: block;
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 10px solid var(--blanco-puro); 
+            box-shadow: 0 10px 25px rgba(44, 122, 123, 0.2); 
+            transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1);
+        }
+
+        /* Botón de Girar */
+        .btn-girar { 
+            padding: 15px 45px; 
+            font-size: 1.4rem; 
+            background-color: var(--verde-agua-oscuro); 
+            color: white; 
+            border: none; 
+            border-radius: 50px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            box-shadow: 0 5px 0 #1d4e4f; 
+            transition: all 0.2s ease; 
+            margin: 20px 0;
+        }
+        
         .btn-girar:active { transform: translateY(4px); box-shadow: none; }
-        .btn-girar:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+        .btn-girar:disabled { background-color: #a0aec0; box-shadow: none; cursor: not-allowed; }
+
+        /* Botón Banner Publicitario */
+        .publicidad-link {
+            display: block;
+            margin: 25px auto 15px;
+            width: 400px;
+            height: 100px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            background-color: var(--verde-agua-medio);
+            border: 2px solid var(--blanco-puro);
+            text-decoration: none;
+        }
+
+        .publicidad-link:hover { transform: scale(1.02); }
+        .publicidad-link img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Texto Promocional del PDF (Debajo del Banner) */
+        .promo-pdf {
+            max-width: 470px;
+            margin: 0 auto 30px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--verde-agua-oscuro);
+            border: 1px dashed var(--verde-agua-medio);
+        }
 
         /* Panel de Receta */
-        #receta-display { margin: 30px auto; max-width: 600px; background: white; padding: 25px; border-radius: 20px; display: none; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-left: 10px solid var(--color-principal); }
-        h2 { color: var(--color-principal); text-transform: uppercase; margin-top: 0; }
-        pre { white-space: pre-wrap; word-wrap: break-word; font-family: inherit; font-size: 1rem; line-height: 1.6; }
-        .cerrar { background: #95a5a6; color: white; border: none; padding: 5px 15px; border-radius: 5px; float: right; cursor: pointer; }
+        #receta-display { 
+            margin: 30px auto; 
+            max-width: 750px; 
+            background: var(--blanco-puro); 
+            padding: 30px; 
+            border-radius: 15px; 
+            display: none; 
+            text-align: left; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-top: 8px solid var(--verde-agua-medio);
+        }
+
+        #titulo-receta { color: var(--verde-agua-oscuro); text-align: center; margin-top: 0; }
+        #contenido-receta { white-space: pre-wrap; line-height: 1.7; font-size: 1.1rem; }
     </style>
 </head>
 <body>
 
-    <h1>La Cocina de Laura</h1>
-    <p>Gira la ruleta para elegir tu próxima receta</p>
+    <h1>¿QUÉ COCINAMOS HOY?</h1>
+    <h3>Una web con más de 100 recetas bolivianas<br>y un libro con más de 300 recetas en PDF!<br>Facebook: Editorial Digital Bo</h3>
     
+    <div id="instruccion-texto">Gira la ruleta para tu próxima receta</div>
+
     <div id="canvas-container">
         <div id="flecha"></div>
-        <canvas id="ruleta" width="500" height="500"></canvas>
+        <canvas id="ruleta" width="600" height="600"></canvas>
     </div>
 
     <button id="btnMain" class="btn-girar" onclick="iniciarGiro()">¡GIRAR RULETA!</button>
 
-    <div id="receta-display">
-        <button class="cerrar" onclick="cerrarPanel()">Cerrar x</button>
-        <h2 id="titulo-receta"></h2>
-        <hr>
-        <pre id="contenido-receta"></pre>
+    <a href="https://wa.me/59172614777" target="_blank" class="publicidad-link">
+        <img src="tu-publicidad.gif" alt="Publicidad Laura" onerror="this.style.display='none'; this.parentNode.innerHTML='<div style=padding-top:35px;color:white;font-weight:bold>¡Consigue el Recetario PDF aquí!</div>'">
+    </a>
+
+    <div class="promo-pdf">
+        Recuerda que tenemos nuestro Recetario PDF online, son 300 recetas para que no tengas que depender del azar, y tengas tu guía para cocinar lo que gustes! 
+        <br><strong>Mas info al WhatsApp: 72614777</strong>
     </div>
 
-    <script>
-        // --- CONFIGURACIÓN ---
-        const MAX_POSIBLE = 300; // El número máximo de archivos que tienes
-        // ---------------------
+    <div id="receta-display">
+        <h2 id="titulo-receta"></h2>
+        <hr style="border:0; border-top:1px solid #eee; margin: 20px 0;">
+        <div id="contenido-receta"></div>
+    </div>
 
+    <script>     //* AQUI ES DONDE PONEMOS LA CANTIDAD DE RECETAS QUE TENEMOS DISPONIBLES
+        const CANTIDAD_REAL = 45; 
         const canvas = document.getElementById('ruleta');
         const ctx = canvas.getContext('2d');
+        const instruccion = document.getElementById('instruccion-texto');
         const btn = document.getElementById('btnMain');
+        const recetaDisplay = document.getElementById('receta-display');
+        
         let anguloActual = 0;
 
+        // PALETA DE COLORES VIBRANTES PARA LA RULETA
+        const coloresRuleta = [
+            "#e74c3c", // Rojo
+            "#f1c40f", // Amarillo
+            "#2ecc71", // Verde
+            "#3498db", // Azul
+            "#9b59b6", // Morado
+            "#e67e22", // Naranja
+            "#1abc9c", // Turquesa
+            "#ff7979", // Rosado
+            "#badc58", // Lima
+            "#7ed6df", // Celeste
+            "#f0932b", // Ámbar
+            "#686de0"  // Índigo
+        ];
+
         function dibujarRuleta() {
-            const colores = ["#f1c40f", "#e67e22", "#e74c3c", "#3498db", "#2ecc71", "#9b59b6"];
-            for (let i = 0; i < 12; i++) {
+            const secciones = 12;
+            const arco = (2 * Math.PI) / secciones;
+            for (let i = 0; i < secciones; i++) {
                 ctx.beginPath();
-                ctx.fillStyle = colores[i % colores.length];
-                ctx.moveTo(250, 250);
-                ctx.arc(250, 250, 250, i * Math.PI/6, (i+1) * Math.PI/6);
+                ctx.fillStyle = coloresRuleta[i % coloresRuleta.length];
+                ctx.moveTo(300, 300);
+                ctx.arc(300, 300, 300, i * arco, (i + 1) * arco);
+                ctx.lineTo(300, 300);
                 ctx.fill();
+                
+                // Línea divisoria blanca
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 3;
                 ctx.stroke();
             }
+            // Círculo central
+            ctx.beginPath();
+            ctx.fillStyle = "white";
+            ctx.arc(300, 300, 20, 0, 2 * Math.PI);
+            ctx.fill();
         }
-        dibujarRuleta();
+
+        window.onload = dibujarRuleta;
 
         function iniciarGiro() {
+            if(btn.disabled) return;
             btn.disabled = true;
-            document.getElementById('receta-display').style.display = 'none';
+            recetaDisplay.style.display = 'none';
+            instruccion.innerText = "¡Mucha suerte! Girando...";
             
-            let vueltas = 8 + Math.random() * 5;
-            let tiempo = 3500; 
-            anguloActual += vueltas * 360;
-
-            canvas.style.transition = `transform ${tiempo}ms cubic-bezier(0.15, 0, 0.15, 1)`;
+            const vueltasExtras = 15;
+            const gradosAleatorios = Math.floor(Math.random() * 360);
+            anguloActual += (vueltasExtras * 360) + gradosAleatorios;
+            
             canvas.style.transform = `rotate(${anguloActual}deg)`;
 
-            setTimeout(buscarRecetaValida, tiempo);
+            setTimeout(() => {
+                seleccionarReceta();
+            }, 5000);
         }
 
-        async function buscarRecetaValida() {
-            // Intentamos encontrar una receta al azar que sí exista
-            let encontrado = false;
-            let intentos = 0;
+        async function seleccionarReceta() {
+            const numElegido = Math.floor(Math.random() * CANTIDAD_REAL) + 1;
+            const nombreArchivo = numElegido.toString().padStart(3, '0') + ".txt";
 
-            while (!encontrado && intentos < 20) {
-                let num = Math.floor(Math.random() * MAX_POSIBLE) + 1;
-                let nombreArchivo = num.toString().padStart(3, '0') + ".txt";
-                
-                try {
-                    // FORMA CORRECTA (Ruta relativa)
-                    const res = await fetch(`recetas/${nombreArchivo}`);
-                    if (res.ok) {
-                        const texto = await res.text();
-                        mostrarReceta(texto);
-                        encontrado = true;
-                    }
-                } catch (e) { /* Sigue intentando */ }
-                intentos++;
-            }
+            try {
+                const res = await fetch(`recetas/${nombreArchivo}`);
+                if (res.ok) {
+                    const textoCompleto = await res.text();
+                    const lineas = textoCompleto.split('\n');
+                    const nombrePlato = lineas[0].trim();
 
-            if (!encontrado) {
-                alert("No se encontraron archivos en la carpeta /recetas/. Verifica que los nombres sean 001.txt, 002.txt, etc.");
+                    instruccion.innerText = "¡Salió " + nombrePlato + "!";
+                    document.getElementById('titulo-receta').innerText = nombrePlato;
+                    document.getElementById('contenido-receta').innerText = textoCompleto;
+                    recetaDisplay.style.display = 'block';
+                    recetaDisplay.scrollIntoView({behavior: "smooth"});
+                } else {
+                    instruccion.innerText = "¡Prueba girar otra vez!";
+                }
+            } catch (e) {
+                instruccion.innerText = "Error al leer receta.";
             }
             btn.disabled = false;
-        }
-
-        function mostrarReceta(texto) {
-            const lineas = texto.split('\n');
-            document.getElementById('titulo-receta').innerText = lineas[0];
-            document.getElementById('contenido-receta').innerText = texto;
-            document.getElementById('receta-display').style.display = 'block';
-            document.getElementById('receta-display').scrollIntoView({behavior: "smooth"});
-        }
-
-        function cerrarPanel() {
-            document.getElementById('receta-display').style.display = 'none';
-            window.scrollTo({top: 0, behavior: 'smooth'});
         }
     </script>
 </body>
 </html>
-
-
